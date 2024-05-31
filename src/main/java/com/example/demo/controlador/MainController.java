@@ -95,7 +95,7 @@ public class MainController {
                       @RequestParam(value = "page", defaultValue = "0") int page, /* PAGINACIÓN */
                       @RequestParam(value = "size", defaultValue = "5") int size, /* PAGINACIÓN */
                       HttpServletRequest request) {
-
+    	logger.info("@ INFO :: ### Acceso a Comentarios . ###");
         // Obtener { Comentarios } ordenar por fecha de creación
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("fechaCreacion").descending());
         Page<Comentario> comentarios = comentarioServicio.listarTodos(pageRequest);

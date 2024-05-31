@@ -1,5 +1,7 @@
 package com.example.demo.controlador;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 	@Autowired
     private UsuarioServicio usuarioServicio;
@@ -41,11 +45,12 @@ public class AdminController {
     @GetMapping("/home")
     @PreAuthorize("hasRole('ADMIN')")
     public String admin(Model model,Authentication authentication) {
+    	String usernameAuth = authentication.getName();
     	
-    	 String usernameAuth = authentication.getName();
     	
     	try {
             PerfilUsuario perfilUsuario = usuarioServicio.obtenerPorUsername(usernameAuth).getPerfilusuario();
+            logger.info("@ INFO :: ### Ha entrado el administrador: "+ perfilUsuario.getNombre() +" . ###");
             model.addAttribute("perfilUsuario", perfilUsuario);
         } catch (Exception e) {
             e.printStackTrace();
