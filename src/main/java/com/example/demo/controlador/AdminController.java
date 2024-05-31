@@ -1,9 +1,20 @@
 package com.example.demo.controlador;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.dto.UsuarioDTO;
+import com.example.demo.entidad.Comentario;
+import com.example.demo.entidad.PerfilUsuario;
+import com.example.demo.servicio.usuario.UsuarioServicio;
+
+import jakarta.servlet.http.HttpServletRequest;
 /**
  * Controlador para las funcionalidades de administración.
  * 
@@ -16,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminController {
 
+	@Autowired
+    private UsuarioServicio usuarioServicio;
+	
     /**
      * Maneja las solicitudes GET para la página de inicio del administrador.
      * 
@@ -26,7 +40,17 @@ public class AdminController {
      */
     @GetMapping("/home")
     @PreAuthorize("hasRole('ADMIN')")
-    public String admin() {
+    public String admin(Model model,Authentication authentication) {
+    	
+    	 String usernameAuth = authentication.getName();
+    	
+    	try {
+            PerfilUsuario perfilUsuario = usuarioServicio.obtenerPorUsername(usernameAuth).getPerfilusuario();
+            model.addAttribute("perfilUsuario", perfilUsuario);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    	
         return "auth/admin/home"; // Muestra la página específica del administrador (admin.html)
     }
 }
